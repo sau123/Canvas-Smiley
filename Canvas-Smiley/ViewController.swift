@@ -20,7 +20,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var newlyCreatedFace: UIImageView!
     
-    var scaleNewlyCreatedFace: CGFloat? = 0
+    var scaleNewlyCreatedFace: CGFloat? = 1
 
     
     override func viewDidLoad() {
@@ -45,28 +45,20 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
 
-    
     //gesture delegate. // to allow pinch to work before panning.
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    
     @IBAction func onTrayPanGesture(panGestureRecognizer: UIPanGestureRecognizer) {
         let point = panGestureRecognizer.translationInView(self.view)
         
         if panGestureRecognizer.state == UIGestureRecognizerState.Began {
-            print("Gesture began at: \(point)")
             trayOriginalCenter = trayView.center
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
-            print("Gesture changed at: \(point)")
             let translation = point
             trayView.center = CGPoint(x: trayOriginalCenter.x, y: trayOriginalCenter.y + translation.y)
-            
-            
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
-            print("Gesture ended at: \(point)")
-            
             let velocity = panGestureRecognizer.velocityInView(trayView)
             if velocity.y > 0 {
                 trayView.frame.origin.y = trayCenterWhenDown
@@ -81,29 +73,19 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         // Absolute (x,y) coordinates in parent view
         let point = panGestureRecognizer.locationInView(view)
-        
         // Relative change in (x,y) coordinates from where gesture began.
         let translation = panGestureRecognizer.translationInView(view)
 //        let velocity = panGestureRecognizer.velocityInView(view)
         
-
-        
         if panGestureRecognizer.state == UIGestureRecognizerState.Began {
-            print("Gesture began at: \(point)")
-//            let imageView = panGestureRecognizer.view as! UIImageView
             smileyOriginalCenter = newlyCreatedFace.center
-            newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
-
-         
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(scaleNewlyCreatedFace!+1, scaleNewlyCreatedFace!+1)
             
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
-            print("Gesture changed at: \(point)")
             newlyCreatedFace.center = CGPoint(x: smileyOriginalCenter.x + translation.x, y: smileyOriginalCenter.y + translation.y)
             
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
-            print("Gesture ended at: \(point)")
-            newlyCreatedFace.transform = CGAffineTransformMakeScale(1, 1)
-
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(scaleNewlyCreatedFace!, scaleNewlyCreatedFace!)
         }
     }
     
@@ -117,6 +99,20 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             scaleNewlyCreatedFace = scale
         }
     }
+    
+    // custom rotate for the newly created smiley on parent view
+    // not able to integrate this with pinch zoom
+    func onCustomRotate(rotationGestureRecognizer: UIRotationGestureRecognizer){
+        let rotation = rotationGestureRecognizer.rotation
+        print("rotation gesture : \(rotation)")
+        newlyCreatedFace.transform = CGAffineTransformMakeRotation(CGFloat(rotation * CGFloat(M_PI) / 180))
+    }
+    
+    func onSmileyDoubleTap(doubleTapRecognizer: UITapGestureRecognizer){
+        print("double tapped delegate func")
+        newlyCreatedFace.removeFromSuperview()
+    }
+    
     
     @IBAction func onSmileyPanGesture(panGestureRecognizer: UIPanGestureRecognizer) {
         let point = panGestureRecognizer.translationInView(self.view)
@@ -137,7 +133,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
             
             let panGestureRecognizer1 = UIPanGestureRecognizer(target: self, action: "onCustomPan:")
-            
             newlyCreatedFace.addGestureRecognizer(panGestureRecognizer1)
 
         }else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
@@ -154,6 +149,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: "onCustomPinch:")
             newlyCreatedFace.addGestureRecognizer(pinchGestureRecognizer)
             pinchGestureRecognizer.delegate = self
+            
+            let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "onSmileyDoubleTap:")
+            doubleTapRecognizer.numberOfTapsRequired = 2
+            newlyCreatedFace.addGestureRecognizer(doubleTapRecognizer)
+            doubleTapRecognizer.delegate = self
+            
+            /*
+            let rotateGestureRecognizer = UIRotationGestureRecognizer(target: self, action: "onCustomRotate:")
+            newlyCreatedFace.addGestureRecognizer(rotateGestureRecognizer)
+            rotateGestureRecognizer.delegate = self
+            */
             
         }
         
