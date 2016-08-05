@@ -67,6 +67,34 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    func onCustomPan(panGestureRecognizer: UIPanGestureRecognizer) {
+        
+        // Absolute (x,y) coordinates in parent view
+        let point = panGestureRecognizer.locationInView(view)
+        
+        // Relative change in (x,y) coordinates from where gesture began.
+        let translation = panGestureRecognizer.translationInView(view)
+//        let velocity = panGestureRecognizer.velocityInView(view)
+        
+        if panGestureRecognizer.state == UIGestureRecognizerState.Began {
+            print("Gesture began at: \(point)")
+//            let imageView = panGestureRecognizer.view as! UIImageView
+            smileyOriginalCenter = newlyCreatedFace.center
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
+
+            
+        } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
+            print("Gesture changed at: \(point)")
+            newlyCreatedFace.center = CGPoint(x: smileyOriginalCenter.x + translation.x, y: smileyOriginalCenter.y + translation.y)
+            
+        } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
+            print("Gesture ended at: \(point)")
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(1, 1)
+
+        }
+    }
+    
     @IBAction func onSmileyPanGesture(panGestureRecognizer: UIPanGestureRecognizer) {
         let point = panGestureRecognizer.translationInView(self.view)
 
@@ -82,6 +110,13 @@ class ViewController: UIViewController {
             newlyCreatedFace.center.y += trayView.frame.origin.y
             newlyCreatedFace.userInteractionEnabled = true
             smileyOriginalCenter = newlyCreatedFace.center
+            
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
+
+            
+            let panGestureRecognizer1 = UIPanGestureRecognizer(target: self, action: "onCustomPan:")
+            
+            view.addGestureRecognizer(panGestureRecognizer1)
 
         }else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
             print("smiley Gesture changed at: \(point)")
@@ -91,7 +126,9 @@ class ViewController: UIViewController {
 
         }else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
             print("smiley Gesture ended at: \(point)")
+            newlyCreatedFace.transform = CGAffineTransformMakeScale(1, 1)
 
+            
         }
         
     }
