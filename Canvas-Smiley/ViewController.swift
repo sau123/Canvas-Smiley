@@ -37,10 +37,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     @IBAction func onTrayTapGesture(tapGestureRecognizer: UITapGestureRecognizer) {
         if isTrayClosed == false{
-        trayView.frame.origin.y = trayCenterWhenDown
+            UIView.animateWithDuration(0.7, animations: {
+                self.trayView.frame.origin.y = self.trayCenterWhenDown
+            })
             isTrayClosed = true
         }else{
-            trayView.frame.origin.y = trayCenterWhenUp
+            UIView.animateWithDuration(0.7, animations: {
+                self.trayView.frame.origin.y = self.trayCenterWhenUp
+            })
             isTrayClosed = false
         }
     }
