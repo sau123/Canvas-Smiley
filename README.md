@@ -1,7 +1,7 @@
-
+##Canvas Smiley
 This project deals with using views, gesture recognizers and animations
 
-Features implemented: 
+###Features implemented: 
 
 * Draggable Tray (Vertical Pan) with animation
 * Delete a smiley when double tapped
@@ -10,7 +10,7 @@ Features implemented:
 * Scaling faces added to the parent view
 * Animation added to the tray arrow
 
-## Gestures Implemented: 
+### Gestures Implemented: 
 
 * Pan
 * Tap (Single & Double)
