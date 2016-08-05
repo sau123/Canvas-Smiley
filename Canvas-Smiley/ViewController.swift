@@ -78,11 +78,10 @@ class ViewController: UIViewController {
             view.addSubview(newlyCreatedFace)
 
             newlyCreatedFace.center = imageView.center
-            newlyCreatedFace.center.y += view.frame.height - trayView.frame.origin.y
-            
+            newlyCreatedFace.center.x += trayView.frame.origin.x
+            newlyCreatedFace.center.y += trayView.frame.origin.y
             newlyCreatedFace.userInteractionEnabled = true
-
-            smileyOriginalCenter = imageView.center
+            smileyOriginalCenter = newlyCreatedFace.center
 
         }else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
             print("smiley Gesture changed at: \(point)")

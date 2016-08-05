@@ -110,13 +110,21 @@
                         <action selector="onSmileyPanGesture:" destination="BYZ-38-t0r" id="AKr-Eu-Ldu"/>
                     </connections>
                 </panGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="qaM-BH-3Ax"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="qaM-BH-3Ax">
+                    <connections>
+                        <action selector="onSmileyPanGesture:" destination="BYZ-38-t0r" id="Ulc-cg-WiO"/>
+                    </connections>
+                </panGestureRecognizer>
                 <panGestureRecognizer minimumNumberOfTouches="1" id="wj2-VN-dJC">
                     <connections>
                         <action selector="onSmileyPanGesture:" destination="BYZ-38-t0r" id="iZs-Rj-bcI"/>
                     </connections>
                 </panGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="YSZ-8R-Zzu"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="YSZ-8R-Zzu">
+                    <connections>
+                        <action selector="onSmileyPanGesture:" destination="BYZ-38-t0r" id="VNG-7V-XrZ"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="237" y="396"/>
         </scene>
