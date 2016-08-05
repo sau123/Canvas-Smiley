@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var trayView: UIView!
+    @IBOutlet weak var trayArrow: UIImageView!
+
     var trayOriginalCenter: CGPoint!
     var smileyOriginalCenter: CGPoint!
     
@@ -25,6 +27,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        trayArrow.transform = CGAffineTransformMakeRotation(CGFloat(180 * M_PI / 180))
+
         trayCenterWhenUp = view.frame.height - trayView.frame.height
         trayCenterWhenDown = view.frame.height - 44
         trayView.frame.origin.y = trayCenterWhenDown
@@ -39,11 +43,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         if isTrayClosed == false{
             UIView.animateWithDuration(0.7, animations: {
                 self.trayView.frame.origin.y = self.trayCenterWhenDown
+                self.trayArrow.transform = CGAffineTransformMakeRotation(CGFloat(180 * M_PI / 180))
             })
             isTrayClosed = true
         }else{
             UIView.animateWithDuration(0.7, animations: {
                 self.trayView.frame.origin.y = self.trayCenterWhenUp
+                self.trayArrow.transform = CGAffineTransformMakeRotation(CGFloat(0 * M_PI / 180))
+
             })
             isTrayClosed = false
         }
@@ -64,10 +71,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             trayView.center = CGPoint(x: trayOriginalCenter.x, y: trayOriginalCenter.y + translation.y)
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Ended {
             let velocity = panGestureRecognizer.velocityInView(trayView)
-            if velocity.y > 0 {
+            if velocity.y > 0 { // going down
                 trayView.frame.origin.y = trayCenterWhenDown
+                self.trayArrow.transform = CGAffineTransformMakeRotation(CGFloat(180 * M_PI / 180))
             }else{
                 trayView.frame.origin.y = trayCenterWhenUp
+                self.trayArrow.transform = CGAffineTransformMakeRotation(CGFloat(0 * M_PI / 180))
+
             }
         }
     }
