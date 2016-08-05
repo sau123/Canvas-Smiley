@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var trayView: UIView!
     var trayOriginalCenter: CGPoint!
     var smileyOriginalCenter: CGPoint!
@@ -19,6 +19,8 @@ class ViewController: UIViewController {
     var isTrayClosed: Bool? = true
     
     var newlyCreatedFace: UIImageView!
+    
+    var scaleNewlyCreatedFace: CGFloat? = 0
 
     
     override func viewDidLoad() {
@@ -43,6 +45,13 @@ class ViewController: UIViewController {
         }
     }
 
+    
+    //gesture delegate. // to allow pinch to work before panning.
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    
     @IBAction func onTrayPanGesture(panGestureRecognizer: UIPanGestureRecognizer) {
         let point = panGestureRecognizer.translationInView(self.view)
         
@@ -77,12 +86,15 @@ class ViewController: UIViewController {
         let translation = panGestureRecognizer.translationInView(view)
 //        let velocity = panGestureRecognizer.velocityInView(view)
         
+
+        
         if panGestureRecognizer.state == UIGestureRecognizerState.Began {
             print("Gesture began at: \(point)")
 //            let imageView = panGestureRecognizer.view as! UIImageView
             smileyOriginalCenter = newlyCreatedFace.center
             newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
 
+         
             
         } else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
             print("Gesture changed at: \(point)")
@@ -92,6 +104,17 @@ class ViewController: UIViewController {
             print("Gesture ended at: \(point)")
             newlyCreatedFace.transform = CGAffineTransformMakeScale(1, 1)
 
+        }
+    }
+    
+    // custom pinch for the newly created smiley on parent view.
+    func onCustomPinch(pinchGestureRecognizer: UIPinchGestureRecognizer){
+        let scale = pinchGestureRecognizer.scale
+        print("pinch scale factor : \(scale)")
+        newlyCreatedFace.transform = CGAffineTransformMakeScale(scaleNewlyCreatedFace!+scale, scaleNewlyCreatedFace!+scale)
+        
+        if pinchGestureRecognizer.state == UIGestureRecognizerState.Ended{
+            scaleNewlyCreatedFace = scale
         }
     }
     
@@ -112,11 +135,10 @@ class ViewController: UIViewController {
             smileyOriginalCenter = newlyCreatedFace.center
             
             newlyCreatedFace.transform = CGAffineTransformMakeScale(2, 2)
-
             
             let panGestureRecognizer1 = UIPanGestureRecognizer(target: self, action: "onCustomPan:")
             
-            view.addGestureRecognizer(panGestureRecognizer1)
+            newlyCreatedFace.addGestureRecognizer(panGestureRecognizer1)
 
         }else if panGestureRecognizer.state == UIGestureRecognizerState.Changed {
             print("smiley Gesture changed at: \(point)")
@@ -128,6 +150,10 @@ class ViewController: UIViewController {
             print("smiley Gesture ended at: \(point)")
             newlyCreatedFace.transform = CGAffineTransformMakeScale(1, 1)
 
+            // would like to add the pinch gesture to the newlyCreatedface after it has panned.
+            let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: "onCustomPinch:")
+            newlyCreatedFace.addGestureRecognizer(pinchGestureRecognizer)
+            pinchGestureRecognizer.delegate = self
             
         }
         
